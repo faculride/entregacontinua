@@ -5,20 +5,29 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// Rotas principais
 app.get('/api', (req, res) => {
   res.send('Hello world!');
 });
 
 app.get('/api/test', (req, res) => {
-  res.send({ message: 'Endpoint de teste na branch master com merge'});
+  res.json({ message: 'Endpoint de teste (branch master com merge)' });
 });
 
 app.get('/api/test-2', (req, res) => {
-  res.send({ message: 'Branch master endpoint teste 2'});
+  res.json({ message: 'Endpoint de teste 2 (branch master)' });
 });
 
-app.listen(port, () => {
-  console.log(`Listening http://localhost:${port}`);
+// Tratamento para rotas inexistentes
+app.use((req, res) => {
+  res.status(404).json({ error: 'Endpoint não encontrado' });
 });
+
+// Só inicia servidor se rodar diretamente (não em testes)
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`🚀 Servidor rodando em http://localhost:${port}`);
+  });
+}
 
 module.exports = app;
